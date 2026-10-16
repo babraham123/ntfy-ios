@@ -29,6 +29,9 @@ struct AppMain: App {
                     store.hardRefresh()
                     delegate.refreshNotificationSettings()
                 }
+                .onOpenURL { url in
+                    DeepLinkHandler.shared.handle(url, delegate: delegate)
+                }
         }
     }
 }

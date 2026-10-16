@@ -12,6 +12,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, ObservableObject {
     
     // Implements navigation from notifications, see https://stackoverflow.com/a/70731861/1440785
     @Published var selectedBaseUrl: String? = nil
+    @Published var deepLinkAlert: DeepLinkAlert? = nil
     @Published private(set) var criticalAlertSetting: UNNotificationSetting = .notSupported
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -162,7 +163,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, ObservableObject {
     }
 
     private func showNotification(baseUrl: String, _ message: Message, completionHandler: (() -> Void)? = nil) {
-        let user = Store.shared.getUser(baseUrl: baseUrl)?.toBasicUser()
+        let user = Store.shared.getUser(baseUrl: baseUrl)?.toCredential()
         let content = UNMutableNotificationContent()
         content.modify(message: message, baseUrl: baseUrl)
         content.attachImageIfNeeded(message: message, user: user) {

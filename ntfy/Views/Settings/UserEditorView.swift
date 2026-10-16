@@ -37,23 +37,19 @@ struct UserEditorView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(
-                    footer: isNewUser
-                    ? Text("You can add a user here. All topics for the given server will use this user.")
-                    : Text("Edit the username or password for \(shortUrl(url: baseUrl)) here. This user is used for all topics of this server. Leave the password blank to leave it unchanged.")
-                ) {
-                    if isNewUser {
-                        TextField("Service URL, e.g. https://ntfy.home.io", text: $baseUrl)
-                            .disableAutocapitalization()
-                            .disableAutocorrection(true)
+                if isTokenUser {
+                    Section(
+                        footer: Text("Signed in with access token. This user is used for all topics of \(shortUrl(url: baseUrl)). It can't be edited, but you can delete it.")
+                    ) {
+                        Text(username)
+                        Text(shortUrl(url: baseUrl))
+                            .foregroundColor(.gray)
                     }
-                    TextField("Username", text: $username)
-                        .disableAutocapitalization()
-                        .disableAutocorrection(true)
-                    SecureField("Password", text: $password)
+                } else {
+                    credentialsSection
                 }
             }
-            .navigationTitle(isNewUser ? "Add user" : "Edit user")
+            .navigationTitle(isNewUser ? "Add user" : isTokenUser ? "User" : "Edit user")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -84,17 +80,41 @@ struct UserEditorView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: saveAction) {
-                        Text("Save")
+                    if !isTokenUser {
+                        Button(action: saveAction) {
+                            Text("Save")
+                        }
+                        .disabled(!isValid())
                     }
-                    .disabled(!isValid())
                 }
             }
+        }
+    }
+
+    private var credentialsSection: some View {
+        Section(
+            footer: isNewUser
+            ? Text("You can add a user here. All topics for the given server will use this user.")
+            : Text("Edit the username or password for \(shortUrl(url: baseUrl)) here. This user is used for all topics of this server. Leave the password blank to leave it unchanged.")
+        ) {
+            if isNewUser {
+                TextField("Service URL, e.g. https://ntfy.home.io", text: $baseUrl)
+                    .disableAutocapitalization()
+                    .disableAutocorrection(true)
+            }
+            TextField("Username", text: $username)
+                .disableAutocapitalization()
+                .disableAutocorrection(true)
+            SecureField("Password", text: $password)
         }
     }
     
     private var isNewUser: Bool {
         selectedUser == nil
+    }
+
+    private var isTokenUser: Bool {
+        selectedUser?.isTokenUser == true
     }
     
     private func saveAction() {

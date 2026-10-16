@@ -42,6 +42,7 @@
     <entity name="User" representedClassName="User" syncable="YES" codeGenerationType="class">
         <attribute name="baseUrl" attributeType="String"/>
         <attribute name="password" attributeType="String"/>
+        <attribute name="token" optional="YES" attributeType="String"/>
         <attribute name="username" attributeType="String"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -52,7 +53,7 @@
     <elements>
         <element name="Notification" positionX="-54" positionY="9" width="128" height="269"/>
         <element name="Subscription" positionX="-262.4760131835938" positionY="11.46405029296875" width="128" height="89"/>
-        <element name="User" positionX="-162" positionY="81" width="128" height="74"/>
+        <element name="User" positionX="-162" positionY="81" width="128" height="89"/>
         <element name="Preference" positionX="-162" positionY="81" width="128" height="59"/>
     </elements>
 </model>

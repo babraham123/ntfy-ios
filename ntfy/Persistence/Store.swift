@@ -236,15 +236,35 @@ class Store: ObservableObject {
     // MARK: Users
     
     func saveUser(baseUrl: String, username: String, password: String) {
+        upsertUser(baseUrl: baseUrl, username: username, password: password, token: nil)
+    }
+
+    /// Saves a token login, unless a different user is already saved for the server. A saved login is
+    /// never replaced by one from an enrollment link. Returns false if the user was not saved.
+    @discardableResult
+    func saveUser(baseUrl: String, username: String, token: String) -> Bool {
+        if let existing = getUser(baseUrl: baseUrl), existing.username != username {
+            Log.w(Store.tag, "Not saving token user \(username): user \(existing.username ?? "?") is already saved for \(baseUrl)")
+            return false
+        }
+        // `password` is a required attribute; token users don't have one
+        return upsertUser(baseUrl: baseUrl, username: username, password: "", token: token)
+    }
+
+    @discardableResult
+    private func upsertUser(baseUrl: String, username: String, password: String, token: String?) -> Bool {
         do {
             let user = getUser(baseUrl: baseUrl) ?? User(context: context)
             user.baseUrl = normalizeBaseUrl(baseUrl)
             user.username = username
             user.password = password
+            user.token = token
             try context.save()
+            return true
         } catch let error {
             Log.w(Store.tag, "Cannot store user", error)
             rollbackAndRefresh()
+            return false
         }
     }
     
@@ -252,12 +272,12 @@ class Store: ObservableObject {
         try? fetchUser(baseUrl: baseUrl)
     }
 
-    func getBasicUser(baseUrl: String) -> BasicUser? {
-        var basicUser: BasicUser?
+    func getCredential(baseUrl: String) -> UserCredential? {
+        var credential: UserCredential?
         context.performAndWait {
-            basicUser = try? fetchUser(baseUrl: baseUrl)?.toBasicUser()
+            credential = try? fetchUser(baseUrl: baseUrl)?.toCredential()
         }
-        return basicUser
+        return credential
     }
 
     func findSubscriptionMatch(forPollRequestTopic topic: String, preferredBaseUrl: String? = nil) -> (baseUrl: String, topic: String)? {

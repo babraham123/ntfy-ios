@@ -125,7 +125,7 @@ struct NotificationRowView: View {
     private var attachmentAuthorizationHeader: String? {
         guard
             let baseUrl = notification.subscription?.baseUrl,
-            let user = store.getUser(baseUrl: baseUrl)?.toBasicUser()
+            let user = store.getUser(baseUrl: baseUrl)?.toCredential()
         else {
             return nil
         }

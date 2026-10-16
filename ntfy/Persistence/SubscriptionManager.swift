@@ -51,7 +51,7 @@ struct SubscriptionManager {
             return
         }
         
-        let user = store.getUser(baseUrl: subscription.baseUrl!)?.toBasicUser()
+        let user = store.getUser(baseUrl: subscription.baseUrl!)?.toCredential()
         Log.d(tag, "Polling from \(subscription.urlString()) with user \(user?.username ?? "anonymous")")
         ApiService.shared.poll(subscription: subscription, user: user) { messages, error in
             guard let messages = messages else {

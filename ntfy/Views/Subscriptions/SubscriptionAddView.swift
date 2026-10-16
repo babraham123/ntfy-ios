@@ -152,7 +152,7 @@ struct SubscriptionAddView: View {
     private func subscribeOrShowLoginAction() {
         loading = true
         addError = nil
-        let user = store.getUser(baseUrl: selectedBaseUrl)?.toBasicUser()
+        let user = store.getUser(baseUrl: selectedBaseUrl)?.toCredential()
         ApiService.shared.checkAuth(baseUrl: selectedBaseUrl, topic: sanitizedTopic, user: user) { result in
             switch result {
             case .Success:
@@ -179,7 +179,7 @@ struct SubscriptionAddView: View {
     private func subscribeWithUserAction() {
         loading = true
         loginError = nil
-        let user = BasicUser(username: username, password: password)
+        let user = UserCredential(username: username, password: password)
         ApiService.shared.checkAuth(baseUrl: selectedBaseUrl, topic: sanitizedTopic, user: user) { result in
             switch result {
             case .Success:

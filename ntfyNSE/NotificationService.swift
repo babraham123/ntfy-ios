@@ -61,7 +61,7 @@ class NotificationService: UNNotificationServiceExtension {
             contentHandler(request.content)
             return
         }
-        let user = store?.getBasicUser(baseUrl: baseUrl)
+        let user = store?.getCredential(baseUrl: baseUrl)
         content.modify(message: message, baseUrl: baseUrl)
         content.attachImageIfNeeded(message: message, user: user) {
             contentHandler(content)
@@ -82,7 +82,7 @@ class NotificationService: UNNotificationServiceExtension {
         }
         
         // Poll original server
-        let user = store?.getBasicUser(baseUrl: subscription.baseUrl)
+        let user = store?.getCredential(baseUrl: subscription.baseUrl)
         // The extension only needs contentHandler to be called from the async callback
         ApiService.shared.poll(baseUrl: subscription.baseUrl, topic: subscription.topic, messageId: pollId, user: user) { message, error in
             guard let message = message else {

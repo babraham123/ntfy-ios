@@ -24,6 +24,11 @@ struct UserRowView: View {
                     Text(user.baseUrl ?? "?")
                         .font(.subheadline)
                         .foregroundColor(.gray)
+                    if user.isTokenUser {
+                        Text("Signed in with access token")
+                            .font(.footnote)
+                            .foregroundColor(.gray)
+                    }
                 }
             }
             Spacer()

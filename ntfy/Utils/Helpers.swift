@@ -13,6 +13,10 @@ func topicAuthUrl(baseUrl: String, topic: String) -> String {
     return "\(normalizeBaseUrl(baseUrl))/\(topic)/auth"
 }
 
+func tokenRedeemUrl(baseUrl: String) -> String {
+    return "\(normalizeBaseUrl(baseUrl))/v1/account/token/redeem"
+}
+
 func topicHash(baseUrl: String, topic: String) -> String {
     let data = Data(topicUrl(baseUrl: normalizeBaseUrl(baseUrl), topic: topic).utf8)
     let digest = SHA256.hash(data: data)
